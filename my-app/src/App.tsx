@@ -518,6 +518,7 @@ function App() {
             amountAlgo: Number(amount),
             confirmedRound: depositResult.confirmedRound ?? 0,
             timestamp: Math.floor(Date.now() / 1000),
+            type: "deposit",
           },
         ])
       );
@@ -969,24 +970,40 @@ function App() {
             <p className="text-sm text-slate-400">No deposits found yet.</p>
           ) : (
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-              {depositHistory.slice(0, 9).map((item) => (
-                <article
-                  key={item.txId}
-                  className="group rounded-2xl border border-slate-700/80 bg-slate-950/65 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-400/70 hover:shadow-[0_0_24px_rgba(45,212,191,0.2)]"
-                >
-                  <p className="text-xs text-slate-500">{formatAgo(item.timestamp)}</p>
-                  <p className="mt-2 text-lg font-semibold text-cyan-300">+{item.amountAlgo.toFixed(6)} ALGO</p>
-                  <p className="mt-1 text-xs text-slate-400">App ID #{item.appId}</p>
-                  <p className="mt-1 text-xs text-slate-500">Round {item.confirmedRound}</p>
-                  <button
-                    className="mt-3 rounded-lg border border-slate-700 bg-slate-900/70 px-3 py-1.5 text-xs font-medium text-slate-200 transition hover:border-cyan-400/70 hover:text-cyan-200"
-                    onClick={() => void loadAppIdValue(item.appId)}
+              {depositHistory.slice(0, 9).map((item) => {
+                const isWithdrawal = item.type === "withdrawal";
+                const isLock = item.type === "lock";
+                const sign = isWithdrawal ? "-" : isLock ? "🔒" : "+";
+                const amountColor = isWithdrawal ? "text-red-300" : isLock ? "text-amber-300" : "text-cyan-300";
+                const typeLabel = item.type === "deposit" ? "Deposit" : item.type === "withdrawal" ? "Withdrawal" : "Lock-In";
+                const typeLabelColor = isWithdrawal ? "text-red-400" : isLock ? "text-amber-400" : "text-cyan-400";
+
+                return (
+                  <article
+                    key={item.txId}
+                    className="group rounded-2xl border border-slate-700/80 bg-slate-950/65 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-400/70 hover:shadow-[0_0_24px_rgba(45,212,191,0.2)]"
                   >
-                    Use This App
-                  </button>
-                  <p className="mt-2 truncate text-[11px] text-slate-500">{item.txId}</p>
-                </article>
-              ))}
+                    <div className="mb-2 flex items-center justify-between gap-2">
+                      <p className="text-xs text-slate-500">{formatAgo(item.timestamp)}</p>
+                      <span className={`rounded-full px-2 py-1 text-[10px] font-semibold ${typeLabelColor} bg-slate-900/50`}>
+                        {typeLabel}
+                      </span>
+                    </div>
+                    <p className={`mt-2 text-lg font-semibold ${amountColor}`}>
+                      {sign}{isLock ? "" : item.amountAlgo.toFixed(6) + " ALGO"}
+                    </p>
+                    <p className="mt-1 text-xs text-slate-400">App ID #{item.appId}</p>
+                    <p className="mt-1 text-xs text-slate-500">Round {item.confirmedRound}</p>
+                    <button
+                      className="mt-3 rounded-lg border border-slate-700 bg-slate-900/70 px-3 py-1.5 text-xs font-medium text-slate-200 transition hover:border-cyan-400/70 hover:text-cyan-200"
+                      onClick={() => void loadAppIdValue(item.appId)}
+                    >
+                      Use This App
+                    </button>
+                    <p className="mt-2 truncate text-[11px] text-slate-500">{item.txId}</p>
+                  </article>
+                );
+              })}
             </div>
           )}
         </section>
