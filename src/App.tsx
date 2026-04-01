@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { deployContract } from "./blockchain/deploy";
 import { depositAlgo } from "./blockchain/deposit";
+import { withdrawAlgo } from "./blockchain/withdraw";
+import { lockInAssets } from "./blockchain/lockIn";
 import { getSavings } from "./blockchain/read";
 import { isOptedIn } from "./blockchain/checkOptin";
 import { optInApp } from "./blockchain/optin";
@@ -133,6 +135,9 @@ function App() {
   const [showCelebration, setShowCelebration] = useState(false);
   const [activity, setActivity] = useState<ActivityEntry[]>([]);
   const [depositHistory, setDepositHistory] = useState<DepositHistoryItem[]>([]);
+  const [withdrawAmount, setWithdrawAmount] = useState("");
+  const [lockDays, setLockDays] = useState("");
+  const [lockExpiry, setLockExpiry] = useState<number | null>(null);
 
   const shortAddress = accountAddress
     ? `${accountAddress.slice(0, 6)}...${accountAddress.slice(-6)}`
@@ -236,6 +241,7 @@ function App() {
 
     void wallet.disconnect();
     setAccountAddress(null);
+    setSavings(0);
     setStatusMessage("Wallet disconnected.");
   }
 
@@ -435,6 +441,66 @@ function App() {
     }
   }
 
+  async function handleWithdraw() {
+    if (!accountAddress || !appId || !withdrawAmount) return;
+
+    try {
+      const numericAppId = Number(appId);
+      setStatusMessage("Processing withdrawal...");
+
+      await withdrawAlgo(
+        accountAddress,
+        numericAppId,
+        Number(withdrawAmount),
+        walletRef.current
+      );
+
+      await fetchSavings();
+      await fetchDepositHistory(numericAppId);
+
+      setStatusMessage("Withdrawal initiated! Funds reduced from vault.");
+      setWithdrawAmount("");
+    } catch (err) {
+      console.error(err);
+      const message = err instanceof Error ? err.message : "Something went wrong.";
+      setStatusMessage(`Withdrawal failed: ${message}`);
+    }
+  }
+
+  async function handleLockIn() {
+    if (!accountAddress || !appId || !lockDays) return;
+
+    try {
+      const numericAppId = Number(appId);
+      const days = Number(lockDays);
+
+      if (days <= 0) {
+        setStatusMessage("Lock duration must be at least 1 day.");
+        return;
+      }
+
+      setStatusMessage("Locking assets...");
+
+      await lockInAssets(
+        accountAddress,
+        numericAppId,
+        days,
+        walletRef.current
+      );
+
+      // Set lock expiry for UI display
+      const expiryTime = Math.floor(Date.now() / 1000) + days * 86400;
+      setLockExpiry(expiryTime);
+
+      setStatusMessage(`Assets locked for ${days} day${days === 1 ? "" : "s"}!`);
+      setLockDays("");
+    } catch (err) {
+      console.error(err);
+      const message = err instanceof Error ? err.message : "Something went wrong.";
+      setStatusMessage(`Lock-in failed: ${message}`);
+    }
+  }
+
   return (
     <main className="relative min-h-screen overflow-hidden px-4 py-6 text-slate-100 sm:px-6 lg:px-8">
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_20%_10%,rgba(56,189,248,0.12),transparent_28%),radial-gradient(circle_at_80%_15%,rgba(168,85,247,0.16),transparent_32%),radial-gradient(circle_at_50%_90%,rgba(45,212,191,0.08),transparent_36%),linear-gradient(160deg,#02030a_0%,#05071a_45%,#030512_100%)]" />
@@ -518,6 +584,56 @@ function App() {
               />
               <NeonButton onClick={handleDeposit} disabled={!appId || !amount || !isConnected}>Deposit</NeonButton>
             </div>
+
+            <div className="mt-6 grid gap-3 border-t border-slate-700 pt-6 sm:grid-cols-2">
+              <div>
+                <label className="mb-2 block text-xs uppercase tracking-widest text-slate-400">Withdrawal Amount</label>
+                <input
+                  className="w-full rounded-xl border border-slate-700 bg-slate-950/80 px-4 py-3 text-sm text-slate-100 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
+                  type="number"
+                  min="0"
+                  step="0.000001"
+                  placeholder="Amount to withdraw (ALGO)"
+                  value={withdrawAmount}
+                  onChange={(event) => setWithdrawAmount(event.target.value)}
+                />
+                <NeonButton
+                  variant="secondary"
+                  className="mt-2 w-full"
+                  onClick={handleWithdraw}
+                  disabled={!appId || !withdrawAmount || !isConnected}
+                >
+                  Withdraw
+                </NeonButton>
+              </div>
+              <div>
+                <label className="mb-2 block text-xs uppercase tracking-widest text-slate-400">Lock Duration</label>
+                <input
+                  className="w-full rounded-xl border border-slate-700 bg-slate-950/80 px-4 py-3 text-sm text-slate-100 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
+                  type="number"
+                  min="1"
+                  placeholder="Days to lock"
+                  value={lockDays}
+                  onChange={(event) => setLockDays(event.target.value)}
+                />
+                <NeonButton
+                  variant="warning"
+                  className="mt-2 w-full"
+                  onClick={handleLockIn}
+                  disabled={!appId || !lockDays || !isConnected}
+                >
+                  Lock Assets
+                </NeonButton>
+              </div>
+            </div>
+
+            {lockExpiry && (
+              <div className="mt-4 rounded-2xl border border-amber-400/20 bg-amber-500/8 p-4">
+                <p className="text-sm text-amber-200">
+                  🔒 Assets locked until {new Date(lockExpiry * 1000).toLocaleDateString()}
+                </p>
+              </div>
+            )}
 
             <h3 className="mb-3 mt-6 text-sm uppercase tracking-[0.2em] text-slate-400">Savings Goals</h3>
             <div className="space-y-3">
