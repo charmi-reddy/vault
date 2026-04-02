@@ -96,18 +96,22 @@ Fortuna introduces a **smart contract-powered savings vault** where:
 ## 🚀 Getting Started
 
 ### 1. Clone the repository
-
+```
 git clone https://github.com/charmi-reddy/Fortuna.git
 cd Fortuna
-
+```
 ### 2. Install dependencies
+```
 npm install
-
+```
 ### 3. Start Algorand LocalNet
+```
 algokit localnet start
-
+```
 ### 4. Run the app
+```
 npm run dev
+```
 
 ## Key Concept
 - Vault Address = Smart Contract Address
