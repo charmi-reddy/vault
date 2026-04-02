@@ -1,173 +1,95 @@
-**Savings Vault**🚀
+# 🏦 Fortuna — Smart Savings Vault on Algorand
 
-A blockchain-based **Savings Vault dApp on Algorand** that enables users to securely deposit, track, and manage their savings in a simple, transparent, and engaging way.
-
----
-
-**Overview** 🧠
-
-Savings Vault transforms traditional saving into a **structured, secure, and interactive experience**.
-
-Instead of relying on complex DeFi tools or passive banking apps, this platform provides a **clean and user-friendly vault system** powered by smart contracts.
-
-> **“Making saving money secure, transparent, and engaging using blockchain.”**
+> ⚡ A decentralized savings system designed for **secure, transparent, and user-driven asset management** using Algorand smart contracts.
 
 ---
 
- **Problem Statement**❓
+## 🧠 Overview
 
-Current financial tools have major limitations:
+**Fortuna** transforms saving money into a **structured and verifiable on-chain experience**.
 
-* Saving money is not engaging → users lose consistency
-* Traditional apps are passive and boring
-* DeFi platforms are complex for beginners
-* Lack of transparency and motivation systems
+Instead of relying on passive banking apps or complex DeFi platforms, Fortuna provides a **clean vault-based system** where users can securely store, track, and manage their funds — fully on-chain.
 
 ---
 
- **Solution**💡
+## ❓ Problem
 
-Savings Vault introduces a **smart contract–powered savings system** where:
+Modern financial tools fall short in key areas:
 
-* Users can deposit ALGO into a secure vault
-* Funds are stored on-chain (tamper-proof)
-* Users can track savings progress in real-time
-* The system supports future gamification and rewards
-
----
-
-**Features** ⚙️
-
- **Smart Contract (Core Logic)** 🔐
-
-* Built using **AlgoKit + TypeScript**
-* Uses:
-
-  ```ts
-  LocalState<bigint>()
-  ```
-* Handles:
-
-  * User opt-in
-  * Deposits
-  * Balance tracking
+- Saving is **passive and unengaging**
+- Traditional apps lack **transparency**
+- DeFi platforms are **complex for beginners**
+- No structured systems for **consistency or motivation**
 
 ---
 
-**Secure Vault System** 💰
+## 💡 Solution
 
-* Funds stored in **smart contract (vault address)**
-* Fully **non-custodial**
-* No manual control or interference
+Fortuna introduces a **smart contract-powered savings vault** where:
 
----
-
-**Savings Tracking** 📊
-
-* Real-time balance updates
-* Per-user savings stored on-chain
+- Users deposit ALGO into a **secure on-chain vault**
+- Funds are **tamper-proof and transparent**
+- Individual balances are tracked using **local state**
+- The system is designed for **future gamification and incentives**
 
 ---
 
-**Wallet Integration (Planned)** 🔗
+## ⚙️ Core Features
 
-* Pera Wallet support
-* Enables real blockchain transactions
-
----
-
-**Gamification (Planned)** 🎮
-
-* Progress bars
-* Milestones & achievements
-* Visual vault growth
+### 🔐 Smart Contract Logic
+- Built with **AlgoKit + TypeScript**
+- Uses `LocalState<bigint>()` for per-user storage
+- Handles:
+  - User opt-in  
+  - Deposits  
+  - Balance tracking  
 
 ---
 
-**System Flow** 🔄
-
-1. User connects wallet (Pera Wallet)
-2. User opts into the smart contract
-3. User deposits ALGO
-4. Smart contract updates user state
-5. UI reflects updated savings
+### 💰 Secure Vault System
+- Funds stored in **smart contract address**
+- Fully **non-custodial**
+- No centralized control
 
 ---
 
-**Tech Stack** 🏗️
-
-* **Blockchain**: Algorand
-* **Smart Contracts**: AlgoKit (TypeScript)
-* **Frontend**: React + Vite
-* **Languages**: TypeScript, JavaScript, CSS, HTML
-* **Development Network**: Algorand LocalNet
+### 📊 On-Chain Savings Tracking
+- Real-time balance updates
+- Transparent, user-specific storage
 
 ---
 
-**Project Structure** 📂
-
-```
-backend/        → Smart contract logic (AlgoKit)
-my-app/         → Frontend application
-public/         → Static assets
-src/            → UI components and logic
-package.json
-vite.config.ts
-```
+### 🔗 Wallet Integration *(Planned)*
+- Pera Wallet support
+- Enables real blockchain transactions
 
 ---
 
-##  Getting Started
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/your-username/savings-vault.git
-cd savings-vault
-```
-
-### 2. Install dependencies
-
-```bash
-npm install
-```
-
-### 3. Start Algorand LocalNet
-
-```bash
-algokit localnet start
-```
-
-### 4. Run the application
-
-```bash
-npm run dev
-```
+### 🎮 Gamification Layer *(Planned)*
+- Progress tracking
+- Milestones & rewards
+- Visual vault growth
 
 ---
 
-##  Key Concept
+## 🔄 System Flow
 
-* **Vault Address** = Smart Contract Address
-* All users deposit into the same vault
-* Individual balances are tracked using **local state**
-
----
-
-##  Why This Project Stands Out
-
-* Uses blockchain for a real financial use case
-* Focuses on simplicity and usability
-* Implements secure smart contract logic
-* Designed for future gamification
-* Built with proper workflow (LocalNet → TestNet)
+1. User connects wallet  
+2. User opts into the smart contract  
+3. User deposits ALGO  
+4. Contract updates user state  
+5. UI reflects updated savings  
 
 ---
 
-##  Future Scope
+## 🏗️ Tech Stack
 
-* Savings goals with deadlines
-* NFT-based milestone rewards
-* AI-based saving suggestions
-* Group savings vaults
-* Deployment on TestNet & MainNet
+- **Blockchain**: Algorand  
+- **Smart Contracts**: AlgoKit (TypeScript)  
+- **Frontend**: React + Vite  
+- **Languages**: TypeScript, JavaScript, HTML, CSS  
+- **Network**: Algorand LocalNet  
+
+---
+
+## 📂 Project Structure
